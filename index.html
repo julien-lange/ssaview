@@ -9,8 +9,9 @@
 
 <body>
 <div class="container">
-<h1>Go SSA viewer</h1>
-<p class="lead"><a href="https://github.com/tmc/ssaview">https://github.com/tmc/ssaview</a></p>
+<h1>Go SSA viewer, now with method bodies!</h1>
+<p class="lead"><a href="https://github.com/julien-lange/ssaview">https://github.com/julien-lange/ssaview</a>
+(forked from <a href="https://github.com/tmc/ssaview">https://github.com/tmc/ssaview</a>)</p>
 <p class="lead">Shows the <a href="http://en.wikipedia.org/wiki/Static_single_assignment_form">SSA (Static Single Assignment)</a> representation of input code.<br/>Uses the wonderful <a href="https://godoc.org/golang.org/x/tools/go/ssa">golang.org/x/tools/go/ssa</a> package.</p>
 </div>
 <div id="tools">
@@ -25,20 +26,27 @@
 		<pre id="source">
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func main() {
-	a, b := 42, 43
-	equal(a, b)
-	fmt.Println("Let's see the SSA representation of this program")
+type I interface { method(y int) int }
+type A struct { x int }
+
+func (x A) method(y int) int {return y}
+
+func foo(x I) {
+  a := x.(A)
+  a.x = 0
+  fmt.Println("2:", a.x)
 }
 
-func equal(i, j int) bool {
-	// needless closure
-	inner := func() bool {
-		return i == j
-	}
-	return inner()
+func main() {
+	a := A{42}
+	a.method(35)
+        fmt.Println("1:", a.x)  // Prints 42
+	foo(a)                  // Prints 0
+	fmt.Println("3:", a.x)  // Still prints 42 -- struct was "passed by value" to the interface parameter
 }</pre>
 		</form>
 	</div>

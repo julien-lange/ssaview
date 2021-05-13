@@ -1,32 +1,14 @@
 ssaview
 -------
-http://golang-ssaview.herokuapp.com/
 
-ssaview is a small utlity that renders SSA code alongside input Go code
+ssaview is a small utlity that renders SSA code alongside input Go code, this forked from https://github.com/tmc/ssaview (main difference is that it produces SSA for method bodies too)
 
 Runs via HTTP on :8080
 
 License: ISC
 
 ```sh
-  $ go get github.com/tmc/ssaview
+  $ go get github.com/julien-lange/ssaview
   $ ssaview &
   $ open http://localhost:8080/
 ```
-
-Ideas for extension:
-
-- [ ] proper fullscreen ui
-- [ ] allow selection in one editor to highlight the associated code in the other
-- [ ] include interpreter
-
-Deploying:
-
-On Heroku: Uses custom buildpack to preserve GOROOT:
-
-```sh
-$ heroku buildpacks:set https://github.com/tmc/heroku-buildpack-go.gi
-```
-
-Screenshot:
-![Example screenshot](https://github.com/tmc/ssaview/raw/master/.screenshot.png)

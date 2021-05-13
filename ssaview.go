@@ -17,6 +17,7 @@ import (
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
+	"golang.org/x/tools/go/types/typeutil"
 )
 
 const indexPage = "index.html"
@@ -61,6 +62,15 @@ func toSSA(source io.Reader, fileName, packageName string, debug bool) ([]byte, 
 	for _, obj := range mainPkg.Members {
 		if obj.Token() == token.FUNC {
 			funcs = append(funcs, obj)
+		}
+		if obj.Token() == token.TYPE {
+			for _, meth := range typeutil.IntuitiveMethodSet(obj.Type(), &mainPkg.Prog.MethodSets) {
+				ssaMeth := ssaProg.LookupMethod(obj.Type(), mainPkg.Pkg, meth.Obj().Name())
+				if ssaMeth != nil {
+					ssaMeth.WriteTo(out)
+				}
+			}
+			
 		}
 	}
 	// sort by Pos()
